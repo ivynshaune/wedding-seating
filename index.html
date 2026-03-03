@@ -35,8 +35,10 @@ button {
 
 #mapContainer {
     position: relative;
-    margin-top: 30px;
-    display: block;
+    width: 434px;
+    height: 502px;
+    margin: 30px auto;
+    display: none;
 }
 
 #floorplan {
@@ -45,26 +47,20 @@ button {
     display: block;
 }
 
+#pathCanvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
 .highlight {
     position: absolute;
     width: 50px;
     height: 50px;
     border-radius: 50%;
     border: 4px solid gold;
-    pointer-events: none;
     transform: translate(-50%, -50%);
-    animation: glow 1.5s infinite alternate;
-}
-
-@keyframes glow {
-    from { box-shadow: 0 0 5px gold; }
-    to { box-shadow: 0 0 20px gold; }
-}
-
-#pathCanvas {
-    position: absolute;
-    left: 0;
-    top: 0;
+    pointer-events: none;
 }
 </style>
 </head>
