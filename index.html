@@ -72,7 +72,7 @@ button {
 <script>
 let guests = {};
 let tables = {};
-let entrance = {x: 300, y: 550}; // bottom centre approx
+let entrance = {x: 300, y: 600}; // bottom centre approx
 
 async function loadData() {
     const guestData = await fetch("guests.csv").then(r => r.text());
@@ -110,6 +110,7 @@ function showMap(table) {
 
     let coords = tables[table];
     let highlight = document.createElement("div");
+    highlight.style.backgroundColor = "rgba(255,0,0,0.3)";
     highlight.className = "highlight";
     highlight.style.left = coords.x + "px";
     highlight.style.top = coords.y + "px";
