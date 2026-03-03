@@ -70,9 +70,10 @@ button {
 </div>
 
 <script>
+<script>
 let guests = {};
 let tables = {};
-let entrance = {x: 300, y: 600}; // bottom centre approx
+let entrance = {x: 217, y: 490}; // bottom centre for 434x502 image
 
 async function loadData() {
     const guestData = await fetch("guests.csv").then(r => r.text());
@@ -105,18 +106,20 @@ function showMap(table) {
 
     const floor = document.getElementById("floorplan");
     const canvas = document.getElementById("path");
-    canvas.width = floor.width;
-    canvas.height = floor.height;
+
+    canvas.width = floor.clientWidth;
+    canvas.height = floor.clientHeight;
 
     let coords = tables[table];
+
     let highlight = document.createElement("div");
-    highlight.style.backgroundColor = "rgba(255,0,0,0.3)";
     highlight.className = "highlight";
     highlight.style.left = coords.x + "px";
     highlight.style.top = coords.y + "px";
     map.appendChild(highlight);
 
     let ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.strokeStyle = "#e6b7a9";
     ctx.lineWidth = 4;
     ctx.beginPath();
@@ -124,11 +127,18 @@ function showMap(table) {
     ctx.lineTo(coords.x, coords.y);
     ctx.stroke();
 }
-    document.getElementById("floorplan").addEventListener("click", function(e) {
-    const rect = this.getBoundingClientRect();
-    const x = Math.round(e.clientX - rect.left);
-    const y = Math.round(e.clientY - rect.top);
-    alert("X: " + x + " Y: " + y);
+
+// ✅ CLICK COORDINATE TOOL (FIXED)
+window.addEventListener("load", function() {
+    const floor = document.getElementById("floorplan");
+    floor.addEventListener("click", function(e) {
+        const rect = floor.getBoundingClientRect();
+        const x = Math.round(e.clientX - rect.left);
+        const y = Math.round(e.clientY - rect.top);
+        alert("X: " + x + " Y: " + y);
+    });
+});
+</script>
 };
 </script>
 
