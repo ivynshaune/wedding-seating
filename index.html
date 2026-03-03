@@ -36,7 +36,7 @@ button {
 #mapContainer {
     position: relative;
     margin-top: 30px;
-    display: none;
+    display: block;
 }
 
 #floorplan {
@@ -60,11 +60,10 @@ button {
     to { box-shadow: 0 0 20px gold; }
 }
 
-canvas {
+#pathCanvas {
     position: absolute;
     left: 0;
     top: 0;
-    pointer-events: none;
 }
 </style>
 </head>
@@ -150,19 +149,6 @@ function showMap(table) {
     ctx.lineTo(coords.x, coords.y);
     ctx.stroke();
 }
-
-
-// 🔍 CLICK TOOL FOR COORDINATES
-window.addEventListener("load", function() {
-    const img = document.getElementById("floorplan");
-
-    img.addEventListener("click", function(e) {
-        const rect = img.getBoundingClientRect();
-        const x = Math.round(e.clientX - rect.left);
-        const y = Math.round(e.clientY - rect.top);
-        alert("X: " + x + "  Y: " + y);
-    });
-});
 
 </script>
 
