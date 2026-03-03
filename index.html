@@ -42,6 +42,7 @@ button {
 #floorplan {
     width: 434px;
     height: 502px;
+    display: block;
 }
 
 .highlight {
@@ -78,8 +79,10 @@ button {
 <p id="result"></p>
 
 <div id="mapContainer">
-    <img id="floorplan" src="floorplan.png">
-    <canvas id="pathCanvas" width="434" height="502"></canvas>
+    <div id="mapInner">
+        <img id="floorplan" src="floorplan.png">
+        <canvas id="pathCanvas" width="434" height="502"></canvas>
+    </div>
 </div>
 
 <script>
