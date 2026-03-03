@@ -149,7 +149,16 @@ function showMap(table) {
     ctx.lineTo(coords.x, coords.y);
     ctx.stroke();
 }
+window.addEventListener("load", function() {
+    const img = document.getElementById("floorplan");
 
+    img.addEventListener("click", function(e) {
+        const rect = img.getBoundingClientRect();
+        const x = Math.round(e.clientX - rect.left);
+        const y = Math.round(e.clientY - rect.top);
+        alert("X: " + x + "  Y: " + y);
+    });
+});
 </script>
 
 </body>
