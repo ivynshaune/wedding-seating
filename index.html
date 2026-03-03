@@ -124,6 +124,12 @@ function showMap(table) {
     ctx.lineTo(coords.x, coords.y);
     ctx.stroke();
 }
+    document.getElementById("floorplan").addEventListener("click", function(e) {
+    const rect = this.getBoundingClientRect();
+    const x = Math.round(e.clientX - rect.left);
+    const y = Math.round(e.clientY - rect.top);
+    alert("X: " + x + " Y: " + y);
+});
 </script>
 
 </body>
