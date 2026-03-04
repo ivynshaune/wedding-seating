@@ -196,26 +196,48 @@ input.addEventListener("input", function() {
         return;
     }
 
-    const matches = Object.keys(guests).filter(name =>
-        name.includes(value)
-    );
+    // Sort alphabetically
+    const matches = Object.keys(guests)
+        .filter(name => name.includes(value))
+        .sort((a, b) => {
+    const lastA = a.split(" ")[1];
+    const lastB = b.split(" ")[1];
+    return lastA.localeCompare(lastB);
+});
 
     if (matches.length === 0) {
         suggestionsBox.style.display = "none";
         return;
     }
 
-    matches.forEach(name => {
+    matches.forEach(fullName => {
+
+        const [first, last] = fullName.split(" ");
+
+        // Format as: Last, First
+        const displayName =
+            last.charAt(0).toUpperCase() + last.slice(1) +
+            ", " +
+            first.charAt(0).toUpperCase() + first.slice(1);
+
+        // Highlight matching text
+        const regex = new RegExp("(" + value + ")", "gi");
+        const highlighted = displayName.replace(regex, "<strong>$1</strong>");
+
         const div = document.createElement("div");
         div.className = "suggestion-item";
-        div.textContent = name.replace(/\b\w/g, c => c.toUpperCase());
+        div.innerHTML = highlighted;
 
         div.onclick = function() {
-            input.value = name;
+            input.value = first + " " + last;
             suggestionsBox.style.display = "none";
         };
 
         suggestionsBox.appendChild(div);
+    });
+
+    suggestionsBox.style.display = "block";
+});
     });
 
     suggestionsBox.style.display = "block";
