@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Find Your Seat</title>
 
 <style>
@@ -35,10 +36,17 @@ button {
 
 #mapContainer {
     position: relative;
-    width: 434px;
-    height: 502px;
+    width: 100%;
+    max-width: 434px;
+    aspect-ratio: 434 / 502;
     margin: 30px auto;
     display: none;
+}
+
+#floorplan {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 #floorplan {
