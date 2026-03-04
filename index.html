@@ -62,7 +62,26 @@ button {
     transform: translate(-50%, -50%);
     pointer-events: none;
 }
+#suggestions {
+    width: 250px;
+    margin: 5px auto;
+    background: white;
+    border: 1px solid #d8cfc9;
+    border-radius: 10px;
+    display: none;
+    text-align: left;
+    max-height: 150px;
+    overflow-y: auto;
+}
 
+.suggestion-item {
+    padding: 8px 12px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #f3e8e2;
+}
 
 </style>
 </head>
@@ -73,6 +92,8 @@ button {
 
 <input type="text" id="nameInput" placeholder="Enter your name">
 <button onclick="findSeat()">Search</button>
+
+<div id="suggestions"></div>   <!-- ADD THIS -->
 
 <p id="result"></p>
 
@@ -159,6 +180,42 @@ window.addEventListener("load", function() {
         const y = Math.round(e.clientY - rect.top);
         alert("X: " + x + "  Y: " + y);
     });
+});
+const input = document.getElementById("nameInput");
+const suggestionsBox = document.getElementById("suggestions");
+
+input.addEventListener("input", function() {
+    const value = this.value.toLowerCase().trim();
+    suggestionsBox.innerHTML = "";
+
+    if (value === "") {
+        suggestionsBox.style.display = "none";
+        return;
+    }
+
+    const matches = Object.keys(guests).filter(name =>
+        name.includes(value)
+    );
+
+    if (matches.length === 0) {
+        suggestionsBox.style.display = "none";
+        return;
+    }
+
+    matches.forEach(name => {
+        const div = document.createElement("div");
+        div.className = "suggestion-item";
+        div.textContent = name.replace(/\b\w/g, c => c.toUpperCase());
+
+        div.onclick = function() {
+            input.value = name;
+            suggestionsBox.style.display = "none";
+        };
+
+        suggestionsBox.appendChild(div);
+    });
+
+    suggestionsBox.style.display = "block";
 });
 </script>
 
