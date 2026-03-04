@@ -114,12 +114,17 @@ let entrance = {x: 230, y: 501}; // bottom centre for 434x502
 async function loadData() {
     const guestData = await fetch("guests.csv").then(r => r.text());
 
-    guestData.split("\n").forEach(line => { // skip header row
+    guestData.split("\n").slice(1).forEach(line => {
         let [first, last, table] = line.split(",");
 
         if(first && last && table) {
-            let fullName = (first.trim() + " " + last.trim()).toLowerCase();
-            guests[fullName] = table.trim();
+            let key = (first.trim() + " " + last.trim()).toLowerCase();
+
+            guests[key] = {
+                first: first.trim(),
+                last: last.trim(),
+                table: table.trim()
+            };
         }
     });
 
@@ -129,17 +134,17 @@ loadData();
 
 function findSeat() {
     let name = document.getElementById("nameInput").value.toLowerCase().trim();
-    let table = guests[name];
+    let guest = guests[name];
 
-    if(!table) {
+    if(!guest) {
         document.getElementById("result").innerText = "Name not found.";
         return;
     }
 
     document.getElementById("result").innerText =
-        "Welcome! You are seated at Table " + table;
+        "Welcome! You are seated at Table " + guest.Table;
 
-    showMap(table);
+    showMap(guest.table);
 }
 
 function showMap(table) {
@@ -212,29 +217,25 @@ input.addEventListener("input", function() {
 
     matches.forEach(fullName => {
 
-        const [first, last] = fullName.split(" ");
+    const guest = guests[fullName];
 
-        // Format as: Last, First
-        const displayName =
-            last.charAt(0).toUpperCase() + last.slice(1) +
-            ", " +
-            first.charAt(0).toUpperCase() + first.slice(1);
+    const displayName =
+        guest.last + ", " + guest.first;
 
-        // Highlight matching text
-        const regex = new RegExp("(" + value + ")", "gi");
-        const highlighted = displayName.replace(regex, "<strong>$1</strong>");
+    const regex = new RegExp("(" + value + ")", "gi");
+    const highlighted = displayName.replace(regex, "<strong>$1</strong>");
 
-        const div = document.createElement("div");
-        div.className = "suggestion-item";
-        div.innerHTML = highlighted;
+    const div = document.createElement("div");
+    div.className = "suggestion-item";
+    div.innerHTML = highlighted;
 
-        div.onclick = function() {
-            input.value = first + " " + last;
-            suggestionsBox.style.display = "none";
-        };
+    div.onclick = function() {
+        input.value = guest.first + " " + guest.last;
+        suggestionsBox.style.display = "none";
+    };
 
-        suggestionsBox.appendChild(div);
-    });
+    suggestionsBox.appendChild(div);
+});
 
     suggestionsBox.style.display = "block";
 });
