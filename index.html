@@ -62,6 +62,25 @@ button {
     transform: translate(-50%, -50%);
     pointer-events: none;
 }
+
+    #suggestions {
+    max-width: 400px;
+    margin: 0 auto;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: none;
+    text-align: left;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background: #f0e6dc;
+}
 </style>
 </head>
 
@@ -69,8 +88,9 @@ button {
 
 <h1>Find Your Seat</h1>
 
-<input type="text" id="nameInput" placeholder="Enter your name">
-<button onclick="findSeat()">Search</button>
+<input type="text" id="searchInput" placeholder="Enter your name">
+<div id="suggestions"></div>
+<button onclick="findSeat()">Find My Seat</button>
 
 <p id="result"></p>
 
