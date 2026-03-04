@@ -113,10 +113,13 @@ let entrance = {x: 230, y: 501}; // bottom centre for 434x502
 // Load guest + table data
 async function loadData() {
     const guestData = await fetch("guests.csv").then(r => r.text());
-    guestData.split("\n").forEach(line => {
-        let [name, table] = line.split(",");
-        if(name && table) {
-            guests[name.trim().toLowerCase()] = table.trim();
+
+    guestData.split("\n").forEach(line => { // skip header row
+        let [first, last, table] = line.split(",");
+
+        if(first && last && table) {
+            let fullName = (first.trim() + " " + last.trim()).toLowerCase();
+            guests[fullName] = table.trim();
         }
     });
 
