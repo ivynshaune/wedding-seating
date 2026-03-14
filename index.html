@@ -110,152 +110,176 @@ button {
 
 let guests = {};
 let tables = {};
-let entrance = {x: 230, y: 501}; // bottom centre for 568x654
+let entrance = {x:284, y:640}; // correct bottom centre
 
-// Load guest + table data
 async function loadData() {
+
     const guestData = await fetch("guests.csv").then(r => r.text());
 
     guestData.split("\n").slice(1).forEach(line => {
-        let [first, last, table] = line.split(",");
 
-        if(first && last && table) {
-            let key = (first.trim() + " " + last.trim()).toLowerCase();
+        let [first,last,table] = line.split(",");
+
+        if(first && last && table){
+
+            let key = (first.trim()+" "+last.trim()).toLowerCase();
 
             guests[key] = {
-                first: first.trim(),
-                last: last.trim(),
-                table: table.trim()
+                first:first.trim(),
+                last:last.trim(),
+                table:table.trim()
             };
+
         }
+
     });
 
     tables = await fetch("tables.json").then(r => r.json());
+
 }
+
 loadData();
 
-function findSeat() {
-    let name = document.getElementById("nameInput").value.toLowerCase().trim();
-    let guest = guests[name];
+function findSeat(){
 
-    if(!guest) {
-        document.getElementById("result").innerText = "Name not found.";
+    let name=document.getElementById("nameInput").value.toLowerCase().trim();
+    let guest=guests[name];
+
+    if(!guest){
+        document.getElementById("result").innerText="Name not found.";
         return;
     }
 
     document.getElementById("result").innerText =
-        "Welcome! You are seated at Table " + guest.table;
+    "Welcome! You are seated at Table "+guest.table;
 
     showMap(guest.table);
+
 }
 
-function showMap(table) {
+function showMap(table){
 
-    document.getElementById("mapContainer").style.display = "block";
+    const map=document.getElementById("mapContainer");
+    const img=document.getElementById("floorplan");
+    const canvas=document.getElementById("pathCanvas");
 
-    // Clear old highlight
-    let old = document.querySelector(".highlight");
+    map.style.display="block";
+
+    const rect=img.getBoundingClientRect();
+
+    const scaleX=rect.width/568;
+    const scaleY=rect.height/654;
+
+    canvas.width=rect.width;
+    canvas.height=rect.height;
+
+    const ctx=canvas.getContext("2d");
+
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    let old=document.querySelector(".highlight");
     if(old) old.remove();
 
-    let coords = tables[table];
+    let coords=tables[table];
     if(!coords) return;
 
-    // Create highlight circle
-    let highlight = document.createElement("div");
-    highlight.className = "highlight";
-const scaleX = rect.width / 568;
-const scaleY = rect.height / 654;
+    let highlight=document.createElement("div");
+    highlight.className="highlight";
 
-highlight.style.left = (coords.x * scaleX) + "px";
-highlight.style.top = (coords.y * scaleY) + "px";
-    document.getElementById("mapContainer").appendChild(highlight);
+    highlight.style.left=(coords.x*scaleX)+"px";
+    highlight.style.top=(coords.y*scaleY)+"px";
 
-    // Draw path
-    let canvas = document.getElementById("pathCanvas");
-    let ctx = canvas.getContext("2d");
+    map.appendChild(highlight);
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    ctx.strokeStyle = "#e6b7a9";
-    ctx.lineWidth = 4;
+    ctx.strokeStyle="#e6b7a9";
+    ctx.lineWidth=4;
 
     ctx.beginPath();
-const scaleX = rect.width / 568;
-const scaleY = rect.height / 654;
-
-ctx.moveTo(entrance.x * scaleX, entrance.y * scaleY);
-ctx.lineTo(coords.x * scaleX, coords.y * scaleY);
+    ctx.moveTo(entrance.x*scaleX,entrance.y*scaleY);
+    ctx.lineTo(coords.x*scaleX,coords.y*scaleY);
     ctx.stroke();
+
 }
-window.addEventListener("load", function() {
 
-    const map = document.getElementById("mapContainer");
-    const img = document.getElementById("floorplan");
-    const rect = img.getBoundingClientRect();
+window.addEventListener("load",function(){
 
-canvas.width = rect.width;
-canvas.height = rect.height;
-    
-        const scaleX = img.naturalWidth / rect.width;
-        const scaleY = img.naturalHeight / rect.height;
+    const img=document.getElementById("floorplan");
 
-        const x = Math.round((e.clientX - rect.left) * scaleX);
-        const y = Math.round((e.clientY - rect.top) * scaleY);
+    img.addEventListener("click",function(e){
 
-        result.innerText = "Coordinates → X: " + x + "  Y: " + y;
+        const rect=img.getBoundingClientRect();
+
+        const scaleX=img.naturalWidth/rect.width;
+        const scaleY=img.naturalHeight/rect.height;
+
+        const x=Math.round((e.clientX-rect.left)*scaleX);
+        const y=Math.round((e.clientY-rect.top)*scaleY);
+
+        document.getElementById("result").innerText=
+        "Coordinates → X:"+x+"  Y:"+y;
 
     });
 
 });
-const input = document.getElementById("nameInput");
-const suggestionsBox = document.getElementById("suggestions");
 
-input.addEventListener("input", function() {
-    const value = this.value.toLowerCase().trim();
-    suggestionsBox.innerHTML = "";
+const input=document.getElementById("nameInput");
+const suggestionsBox=document.getElementById("suggestions");
 
-    if (value === "") {
-        suggestionsBox.style.display = "none";
+input.addEventListener("input",function(){
+
+    const value=this.value.toLowerCase().trim();
+    suggestionsBox.innerHTML="";
+
+    if(value===""){
+        suggestionsBox.style.display="none";
         return;
     }
 
-    // Sort alphabetically
-    const matches = Object.keys(guests)
-        .filter(name => name.includes(value))
-        .sort((a, b) => {
-    const lastA = a.split(" ")[1];
-    const lastB = b.split(" ")[1];
-    return lastA.localeCompare(lastB);
-});
+    const matches=Object.keys(guests)
+    .filter(name=>name.includes(value))
+    .sort((a,b)=>{
 
-    if (matches.length === 0) {
-        suggestionsBox.style.display = "none";
+        const lastA=a.split(" ")[1];
+        const lastB=b.split(" ")[1];
+
+        return lastA.localeCompare(lastB);
+
+    });
+
+    if(matches.length===0){
+        suggestionsBox.style.display="none";
         return;
     }
 
-    matches.forEach(fullName => {
+    matches.forEach(fullName=>{
 
-    const guest = guests[fullName];
+        const guest=guests[fullName];
 
-    const displayName =
-        guest.last + ", " + guest.first;
+        const displayName=guest.last+", "+guest.first;
 
-    const regex = new RegExp("(" + value + ")", "gi");
-    const highlighted = displayName.replace(regex, "<strong>$1</strong>");
+        const regex=new RegExp("("+value+")","gi");
 
-    const div = document.createElement("div");
-    div.className = "suggestion-item";
-    div.innerHTML = highlighted;
+        const highlighted=displayName.replace(regex,"<strong>$1</strong>");
 
-    div.onclick = function() {
-        input.value = guest.first + " " + guest.last;
-        suggestionsBox.style.display = "none";
-    };
+        const div=document.createElement("div");
 
-    suggestionsBox.appendChild(div);
-});
+        div.className="suggestion-item";
 
-    suggestionsBox.style.display = "block";
+        div.innerHTML=highlighted;
+
+        div.onclick=function(){
+
+            input.value=guest.first+" "+guest.last;
+            suggestionsBox.style.display="none";
+
+        };
+
+        suggestionsBox.appendChild(div);
+
+    });
+
+    suggestionsBox.style.display="block";
+
 });
 
 </script>
