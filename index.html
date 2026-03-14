@@ -182,14 +182,25 @@ function showMap(table) {
     ctx.stroke();
 }
 window.addEventListener("load", function() {
-    const img = document.getElementById("floorplan");
 
-    img.addEventListener("click", function(e) {
+    const map = document.getElementById("mapContainer");
+    const img = document.getElementById("floorplan");
+    const result = document.getElementById("result");
+
+    map.addEventListener("click", function(e) {
+
         const rect = img.getBoundingClientRect();
-        const x = Math.round(e.clientX - rect.left);
-        const y = Math.round(e.clientY - rect.top);
-        alert("X: " + x + "  Y: " + y);
+
+        const scaleX = img.naturalWidth / rect.width;
+        const scaleY = img.naturalHeight / rect.height;
+
+        const x = Math.round((e.clientX - rect.left) * scaleX);
+        const y = Math.round((e.clientY - rect.top) * scaleY);
+
+        result.innerText = "Coordinates → X: " + x + "  Y: " + y;
+
     });
+
 });
 const input = document.getElementById("nameInput");
 const suggestionsBox = document.getElementById("suggestions");
