@@ -49,12 +49,6 @@ button {
     display: block;
 }
 
-#floorplan {
-    width: 434px;
-    height: 502px;
-    display: block;
-}
-
 #pathCanvas {
     position: absolute;
     left: 0;
@@ -150,7 +144,7 @@ function findSeat() {
     }
 
     document.getElementById("result").innerText =
-        "Welcome! You are seated at Table " + guest.Table;
+        "Welcome! You are seated at Table " + guest.table;
 
     showMap(guest.table);
 }
