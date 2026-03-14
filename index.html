@@ -37,8 +37,8 @@ button {
 #mapContainer {
     position: relative;
     width: 100%;
-    max-width: 434px;
-    aspect-ratio: 434 / 502;
+    max-width: 568px;
+    aspect-ratio: 568 / 654;
     margin: 30px auto;
     display: none;
 }
@@ -102,7 +102,7 @@ button {
 <div id="mapContainer">
     <div id="mapInner">
         <img id="floorplan" src="floorplan.png">
-        <canvas id="pathCanvas" width="434" height="502"></canvas>
+        <canvas id="pathCanvas" width="568" height="654"></canvas>
     </div>
 </div>
 
@@ -110,7 +110,7 @@ button {
 
 let guests = {};
 let tables = {};
-let entrance = {x: 230, y: 501}; // bottom centre for 434x502
+let entrance = {x: 230, y: 501}; // bottom centre for 568x654
 
 // Load guest + table data
 async function loadData() {
@@ -163,8 +163,11 @@ function showMap(table) {
     // Create highlight circle
     let highlight = document.createElement("div");
     highlight.className = "highlight";
-    highlight.style.left = coords.x + "px";
-    highlight.style.top = coords.y + "px";
+const scaleX = rect.width / 568;
+const scaleY = rect.height / 654;
+
+highlight.style.left = (coords.x * scaleX) + "px";
+highlight.style.top = (coords.y * scaleY) + "px";
     document.getElementById("mapContainer").appendChild(highlight);
 
     // Draw path
@@ -177,20 +180,22 @@ function showMap(table) {
     ctx.lineWidth = 4;
 
     ctx.beginPath();
-    ctx.moveTo(entrance.x, entrance.y);
-    ctx.lineTo(coords.x, coords.y);
+const scaleX = rect.width / 568;
+const scaleY = rect.height / 654;
+
+ctx.moveTo(entrance.x * scaleX, entrance.y * scaleY);
+ctx.lineTo(coords.x * scaleX, coords.y * scaleY);
     ctx.stroke();
 }
 window.addEventListener("load", function() {
 
     const map = document.getElementById("mapContainer");
     const img = document.getElementById("floorplan");
-    const result = document.getElementById("result");
+    const rect = img.getBoundingClientRect();
 
-    map.addEventListener("click", function(e) {
-
-        const rect = img.getBoundingClientRect();
-
+canvas.width = rect.width;
+canvas.height = rect.height;
+    
         const scaleX = img.naturalWidth / rect.width;
         const scaleY = img.naturalHeight / rect.height;
 
